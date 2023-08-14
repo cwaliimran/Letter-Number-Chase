@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/imageViewLetter"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/baseline_abc_24"
+            app:tint="#42A5F5" />
+
+        <TextView
+            style="@style/SubHeadingStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:outlineProvider="none"
+            android:padding="0dp"
+            android:text="Range"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewLetterRange"
+        style="@style/SubHeadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="A - Z" />
+
+    <SeekBar
+        android:id="@+id/seekBarLetter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:max="25"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:progress="25"
+        android:progressDrawable="@drawable/seekbar_track"
+        android:thumb="@drawable/seekbar_thumb_letter" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/baseline_123_24"
+            app:tint="#42A5F5" />
+
+        <TextView
+            style="@style/SubHeadingStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:outlineProvider="none"
+            android:padding="0dp"
+            android:text="Range"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewNumberRange"
+        style="@style/SubHeadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="0 - 5000" />
+
+    <SeekBar
+        android:id="@+id/seekBarNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:max="5000"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:progress="5000"
+        android:progressDrawable="@drawable/seekbar_track"
+        android:thumb="@drawable/seekbar_thumb_letter" />
+
+</LinearLayout>

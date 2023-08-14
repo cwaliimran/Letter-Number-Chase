@@ -1,5 +1,6 @@
 package com.cwnextgen.letternumberchase
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -51,6 +52,10 @@ class MainActivity : AppCompatActivity() {
 
     fun onSkipButtonClick(view: View) {
         updateContent()
+    }
+
+    fun onSettingsButtonClick(view: View) {
+        startActivity(Intent(this, SettingsActivity::class.java))
     }
 
     private fun generateOptions(): List<String> {

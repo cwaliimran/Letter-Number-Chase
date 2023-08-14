@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:homeAsUpIndicator">@drawable/ic_back_arrow</item>
+
+
+    </style>
+
+    <style name="SubHeadingStyle">
+        <item name="android:textSize">28sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FF4081</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:outlineProvider">bounds</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>
