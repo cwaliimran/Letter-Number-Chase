@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var numbersRangeModel = NumbersRange()
     private var lettersRangeModel = LettersRange()
     private var maxOptions = 4
+    private var gameMode = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -87,37 +88,87 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun generateOptions(): List<String> {
-        val options = mutableListOf<String>()
-
+    private fun generateOptions() {
         if (isABCMode) {
             currentLetter = lettersRange.random()
-            options.add(currentLetter.toString())
         } else {
             currentNumber = numbersRange.random()
-            options.add(currentNumber.toString())
+        }
+        val options = mutableListOf<String>()
+        val maxOptionsMinusOne = maxOptions // Separate variable to avoid reducing maxOptions
+
+        when (gameMode) {
+            1 -> {
+                // Match Similar: Generate options based on the current letter/number
+                options.add(if (isABCMode) currentLetter.toString() else currentNumber.toString())
+
+                // Generate a list of available options for incorrect answers
+                val availableOptions = if (isABCMode) {
+                    lettersRange.filter { it != currentLetter }.map { it.toString() }
+                } else {
+                    numbersRange.filter { it != currentNumber }.map { it.toString() }
+                }
+
+                // Shuffle the available options and pick the first maxOptionsMinusOne to create incorrect options
+                try {
+                    val incorrectOptions = availableOptions.shuffled().take(maxOptionsMinusOne)
+                    options.addAll(incorrectOptions)
+                } catch (e: Exception) {
+                }
+            }
+
+            2 -> {
+                // Match Next: Generate options for the next letter/number
+                val next = if (isABCMode) (currentLetter.code + 1).toChar() else currentNumber + 1
+                options.add(next.toString())
+
+
+                // Generate a list of available options for incorrect answers
+                val availableOptions = if (isABCMode) {
+                    lettersRange.map { it.toString() }
+                } else {
+                    numbersRange.map { it.toString() }
+                }
+
+
+                // Shuffle the available options and pick the first maxOptionsMinusOne to create incorrect options
+                try {
+                    val incorrectOptions = availableOptions.shuffled().take(maxOptionsMinusOne)
+                    options.addAll(incorrectOptions)
+                } catch (e: Exception) {
+                }
+
+            }
+
+            3 -> {
+                // Match Previous: Generate options for the previous letter/number
+                val previous = if (isABCMode) (currentLetter.code - 1).toChar() else currentNumber - 1
+                options.add(previous.toString())
+
+                // Generate incorrect options by adding/subtracting one
+                val availableOptions = if (isABCMode) {
+                    lettersRange.map { it.toString() }
+                } else {
+                    numbersRange.map { it.toString() }
+                }
+
+
+                // Shuffle the available options and pick the first maxOptionsMinusOne to create incorrect options
+                try {
+                    val incorrectOptions = availableOptions.shuffled().take(maxOptionsMinusOne)
+                    options.addAll(incorrectOptions)
+                } catch (e: Exception) {
+                }
+            }
         }
 
-        // Generate a list of available options for incorrect answers
-        val availableOptions = if (isABCMode) {
-            lettersRange.filter { it != currentLetter }.map { it.toString() }
-        } else {
-            numbersRange.filter { it != currentNumber }.map { it.toString() }
-        }
-
-        // Shuffle the available options and pick the first 3 to create incorrect options
-        try {
-            val incorrectOptions = availableOptions.shuffled().take(maxOptions)
-            options.addAll(incorrectOptions)
-        } catch (e: Exception) {
-        }
-
-        return options.shuffled()
+        currentOptions = options.shuffled().distinct()
+        optionsAdapter.updateOptions(currentOptions)
     }
 
+
     private fun updateContent() {
-        currentOptions = generateOptions()
-        optionsAdapter.updateOptions(currentOptions)
+        generateOptions()
 
         if (isABCMode) {
             binding.tvLetter.text = currentLetter.toString()
@@ -127,16 +178,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onOptionSelected(selectedOption: String) {
-        if ((isABCMode && selectedOption == currentLetter.toString()) || (!isABCMode && selectedOption == currentNumber.toString())) {
+        val correctOption = when (gameMode) {
+            1 -> if (isABCMode) currentLetter.toString() else currentNumber.toString()
+            2 -> if (isABCMode) (currentLetter.code + 1).toChar()
+                .toString() else (currentNumber + 1).toString()
+
+            3 -> if (isABCMode) (currentLetter.code - 1).toChar()
+                .toString() else (currentNumber - 1).toString()
+
+            else -> ""
+        }
+
+        if (selectedOption == correctOption) {
             showToast("Hurrah!")
             updateContent()
-
         } else {
             showToast("Alas...")
-            val correctIndex = currentOptions.indexOf(
-                if (isABCMode) currentLetter.toString()
-                else currentNumber.toString()
-            )
+            val correctIndex = currentOptions.indexOf(correctOption)
             optionsAdapter.highlightCorrectOption(correctIndex)
         }
 
@@ -148,23 +206,40 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+
         //numbers range
         numbersRangeModel =
             AppClass.sharedPref.getObject(AppConstants.NUMBERS_RANGE, NumbersRange::class.java)
                 ?: NumbersRange(0, 100)
         numbersRange = numbersRangeModel.start..numbersRangeModel.end
-        currentNumber = numbersRange.random()
 
         //abc range
         lettersRangeModel =
             AppClass.sharedPref.getObject(AppConstants.LETTERS_RANGE, LettersRange()::class.java)
                 ?: LettersRange('A'.code, 'Z'.code)
         lettersRange = lettersRangeModel.start.toChar()..lettersRangeModel.end.toChar()
-        currentLetter = lettersRange.random()
 
         //max options
         maxOptions = AppClass.sharedPref.getInt(AppConstants.MAX_OPTIONS, 4)
 
+
+        // Match play mode
+        gameMode = AppClass.sharedPref.getInt(AppConstants.MATCH_TYPE, 1)
+
+        when (gameMode) {
+            1 -> {
+                binding.tvMode.text = "Match Similar"
+            }
+
+            2 -> {
+                binding.tvMode.text = "Match Next"
+            }
+
+            3 -> {
+                binding.tvMode.text = "Match Previous"
+            }
+        }
         updateContent()
 
     }

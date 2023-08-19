@@ -1,6 +1,7 @@
 package com.network.utils
 
 object AppConstants {
+    val MATCH_TYPE = "match_type"
     val MAX_OPTIONS = "max_options"
     val LETTERS_RANGE = "letters_range"
     val NUMBERS_RANGE = "numbers_range"

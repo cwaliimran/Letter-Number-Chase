@@ -1,8 +1,8 @@
 package com.cwnextgen.letternumberchase
 
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
+import android.widget.Toast
 import com.cwnextgen.letternumberchase.databinding.ActivitySettingsBinding
 import com.cwnextgen.letternumberchase.models.LettersRange
 import com.cwnextgen.letternumberchase.models.NumbersRange
@@ -39,12 +39,37 @@ class SettingsActivity : BaseActivity() {
         binding.textViewOptionsRange.text = "${maxOptions + 1}" // Offset by +1
         binding.seekBarOptions.progress = maxOptions
 
+
+        //OPTIONS
+        val radioGroup = binding.radioGroup
+        val selectedOption = AppClass.sharedPref.getInt(AppConstants.MATCH_TYPE, 1)
+        // Set the selected radio button based on the loaded value
+        when (selectedOption) {
+            1 -> radioGroup.check(R.id.radioOption1)
+            2 -> radioGroup.check(R.id.radioOption2)
+            3 -> radioGroup.check(R.id.radioOption3)
+        }
+
+
     }
 
     override fun clicks() {
         binding.btnBack.setOnClickListener {
             finish()
         }
+
+        // Handle radio button selection changes
+        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val selectedValue = when (checkedId) {
+                R.id.radioOption1 -> 1
+                R.id.radioOption2 -> 2
+                R.id.radioOption3 -> 3
+                else -> 0 // Default value when none selected
+            }
+
+            AppClass.sharedPref.storeInt(AppConstants.MATCH_TYPE, selectedValue)
+        }
+
         binding.seekBarLetter.setOnSeekBarChangeListener(
             createLetterSeekBarChangeListener(
                 binding.textViewLetterRange, 'A'.code, 'Z'.code
@@ -56,6 +81,61 @@ class SettingsActivity : BaseActivity() {
                 binding.textViewNumberRange, 0, 5000
             )
         )
+        binding.count10.setOnClickListener {
+            binding.textViewNumberRange.text = "0 - 10"
+            binding.seekBarNumber.progress = 10
+            AppClass.sharedPref.storeObject(
+                AppConstants.NUMBERS_RANGE, NumbersRange(0, 10)
+            )
+        }
+
+        binding.count50.setOnClickListener {
+            binding.textViewNumberRange.text = "0 - 50"
+            binding.seekBarNumber.progress = 50
+            AppClass.sharedPref.storeObject(
+                AppConstants.NUMBERS_RANGE, NumbersRange(0, 50)
+            )
+        }
+
+        binding.count100.setOnClickListener {
+            binding.textViewNumberRange.text = "0 - 100"
+            binding.seekBarNumber.progress = 100
+            AppClass.sharedPref.storeObject(
+                AppConstants.NUMBERS_RANGE, NumbersRange(0, 100)
+            )
+        }
+
+        /*    binding.add1.setOnClickListener {
+                binding.textViewNumberRange.text = "0 - 100"
+                binding.seekBarNumber.progress = 100
+                AppClass.sharedPref.storeObject(
+                    AppConstants.NUMBERS_RANGE, NumbersRange(0, 100)
+                )
+            }
+
+            binding.minus1.setOnClickListener {
+                binding.textViewNumberRange.text = "0 - 100"
+                binding.seekBarNumber.progress = 100
+                AppClass.sharedPref.storeObject(
+                    AppConstants.NUMBERS_RANGE, NumbersRange(0, 100)
+                )
+            }*/
+
+        binding.btnResetSettings.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.MATCH_TYPE, 1)
+            AppClass.sharedPref.storeObject(
+                AppConstants.NUMBERS_RANGE, NumbersRange(0, 100)
+            )
+            AppClass.sharedPref.storeObject(
+                AppConstants.LETTERS_RANGE, LettersRange('A'.code, 'Z'.code)
+            )
+            AppClass.sharedPref.storeInt(
+                AppConstants.MAX_OPTIONS, 4
+            )
+
+            Toast.makeText(this, "Settings reset.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
 
         binding.seekBarOptions.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

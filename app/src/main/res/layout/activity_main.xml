@@ -71,17 +71,6 @@
         android:src="@drawable/redo_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnSwitch" />
-    <!--
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSkip"
-            android:onClick="onSkipButtonClick"
-            android:text="Skip"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="60dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/button_with_text" />
-    -->
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnSettings"
