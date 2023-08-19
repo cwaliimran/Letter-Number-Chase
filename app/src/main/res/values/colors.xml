@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="grey">#666666</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="highlightColor">#fddd3f</color>
-    <color name="primary">#3F51B5</color>
+    <color name="highlightColor">#D1B409</color>
     <color name="currentLetter">#fa00ff</color>
     <color name="background">#31b1ff</color>
-
+    <color name="primary">#6F53FD</color>
+    <color name="secondary">#9C59FE</color>
+    <color name="lightText">#CCA6FF</color>
 </resources>

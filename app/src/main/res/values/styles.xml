@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:homeAsUpIndicator">@drawable/ic_back_arrow</item>
+        <item name="android:windowBackground">@drawable/gradient_background</item>
+        <item name="android:statusBarColor">@color/primary</item>
+    </style>
 
-
+    <style name="SplashTheme" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="SubHeadingStyle">
@@ -21,6 +26,17 @@
         <item name="android:outlineProvider">bounds</item>
         <item name="android:padding">20dp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="button_with_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/buttonbg1</item>
+        <item name="android:fontFamily">@font/digitalt</item>
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

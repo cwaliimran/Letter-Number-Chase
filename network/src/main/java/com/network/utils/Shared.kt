@@ -2,7 +2,6 @@ package com.network.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.network.utils.AppClass
 import com.google.gson.Gson
 
 class SharedPref(myApp: AppClass) {
@@ -47,9 +46,10 @@ class SharedPref(myApp: AppClass) {
         return value
     }
 
-    fun getInt(key: String): Int {
-        return sharedPref!!.getInt(key, 0)
+    fun getInt(key: String, defaultValue: Int? = 0): Int {
+        return sharedPref!!.getInt(key, defaultValue!!)
     }
+
 
     fun storeString(key: String?, value: String?) {
         try {

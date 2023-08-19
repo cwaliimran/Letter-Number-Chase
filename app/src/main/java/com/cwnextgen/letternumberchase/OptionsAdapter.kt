@@ -37,14 +37,9 @@ class OptionsAdapter(private val onItemClick: (String) -> Unit) :
 
         // Set the background color for the correct option
         if (position == highlightedIndex) {
-            holder.btnOption.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.highlightColor
-                )
-            )
+            holder.btnOption.setBackgroundResource(R.drawable.correct_option)
         } else {
-            holder.btnOption.setBackgroundColor(ContextCompat.getColor(context, R.color.primary))
+            holder.btnOption.setBackgroundResource(R.drawable.buttonbg1)
 
         }
     }

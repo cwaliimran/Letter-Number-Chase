@@ -1,7 +1,7 @@
 ext {
   applicationId = "com.cwnextgen.letternumberchase"
   compileSdkVersion = 33
-  minSdkVersion = 21
+  minSdkVersion = 23
   targetSdkVersion = compileSdkVersion
   versionCode = 1
   versionName = "1.0"
