@@ -313,6 +313,14 @@
                         android:progressDrawable="@drawable/seekbar_track"
                         android:thumb="@drawable/seekbar_thumb_letter" />
 
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/randomOptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/lightText"
+                        android:paddingHorizontal="10dp"
+                        android:text="Random Options Count" />
 
                 </LinearLayout>
 

@@ -51,6 +51,9 @@ class SettingsActivity : BaseActivity() {
         }
 
 
+        binding.randomOptions.isChecked =
+            AppClass.sharedPref.getBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE)
+
     }
 
     override fun clicks() {
@@ -154,6 +157,10 @@ class SettingsActivity : BaseActivity() {
             }
         })
 
+        binding.randomOptions.setOnCheckedChangeListener { compoundButton, b ->
+            if (!compoundButton.isPressed) return@setOnCheckedChangeListener
+            AppClass.sharedPref.storeBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE, b)
+        }
     }
 
     private fun createLetterSeekBarChangeListener(
