@@ -1,6 +1,8 @@
 package com.cwnextgen.letternumberchase
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import com.cwnextgen.letternumberchase.databinding.ActivitySplashBinding
 import com.network.base.BaseActivity
 
@@ -12,19 +14,15 @@ class SplashActivity : BaseActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            startActivity(Intent(this, OptionsActivity::class.java))
+            finish()
+        }, 2500)
+
     }
 
     override fun clicks() {
-        binding.root.setOnClickListener {
-            startHome()
-        }
-        binding.btnPlay.setOnClickListener {
-            startHome()
-        }
+
     }
 
-    private fun startHome() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-    }
 }

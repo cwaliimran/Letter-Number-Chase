@@ -58,7 +58,8 @@ class SettingsActivity : BaseActivity() {
         }
         //font OPTIONS
         val radioGroupFonts = binding.radioGroupFonts
-        val selectedOptionFont = AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        val selectedOptionFont =
+            AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
         // Set the selected radio button based on the loaded value
         when (selectedOptionFont) {
             "digitalt" -> radioGroupFonts.check(R.id.fontOption1)
@@ -74,9 +75,19 @@ class SettingsActivity : BaseActivity() {
         binding.randomOptions.isChecked =
             AppClass.sharedPref.getBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE)
 
+        binding.swParty.isChecked =
+            AppClass.sharedPref.getBooleanDefaultTrue(AppConstants.CELEBRATION)
+
         //options column span count
         val count = AppClass.sharedPref.getInt(AppConstants.OPTIONS_COLUMN_COUNT, 3)
         binding.tvColCount.text = count.toString()
+
+
+        //tables count
+        val tableCount = AppClass.sharedPref.getInt(AppConstants.TABLE_COUNT, 10)
+        binding.textViewTableRange.text = tableCount.toString()
+
+
     }
 
     private fun setFons() {
@@ -178,6 +189,23 @@ class SettingsActivity : BaseActivity() {
                 )
             }*/
 
+
+        binding.tableCount5.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.TABLE_COUNT, 5)
+            binding.textViewTableRange.text = "5"
+        }
+
+        binding.tableCount10.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.TABLE_COUNT, 10)
+            binding.textViewTableRange.text = "10"
+        }
+
+        binding.tableCount20.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.TABLE_COUNT, 20)
+            binding.textViewTableRange.text = "20"
+        }
+
+
         binding.btnResetSettings.setOnClickListener {
             AppClass.sharedPref.storeInt(AppConstants.MATCH_TYPE, 1)
             AppClass.sharedPref.storeObject(
@@ -186,6 +214,9 @@ class SettingsActivity : BaseActivity() {
             AppClass.sharedPref.storeObject(
                 AppConstants.LETTERS_RANGE, LettersRange('A'.code, 'Z'.code)
             )
+
+            AppClass.sharedPref.storeInt(AppConstants.TABLE_COUNT, 10)
+
             AppClass.sharedPref.storeInt(
                 AppConstants.MAX_OPTIONS, 4
             )
@@ -229,6 +260,10 @@ class SettingsActivity : BaseActivity() {
             if (!compoundButton.isPressed) return@setOnCheckedChangeListener
             AppClass.sharedPref.storeBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE, b)
         }
+        binding.swParty.setOnCheckedChangeListener { compoundButton, b ->
+            if (!compoundButton.isPressed) return@setOnCheckedChangeListener
+            AppClass.sharedPref.storeBoolean(AppConstants.CELEBRATION, b)
+        }
 
         binding.seekBarFontSize.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -262,6 +297,8 @@ class SettingsActivity : BaseActivity() {
             AppClass.sharedPref.storeInt(AppConstants.OPTIONS_COLUMN_COUNT, 4)
             binding.tvColCount.text = "4"
         }
+
+
     }
 
     private fun createLetterSeekBarChangeListener(

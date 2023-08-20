@@ -14,21 +14,26 @@ import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cwnextgen.letternumberchase.databinding.ActivityMainBinding
+import com.cwnextgen.letternumberchase.dialogs.answerDialog
 import com.cwnextgen.letternumberchase.models.LettersRange
 import com.cwnextgen.letternumberchase.models.NumbersRange
-import com.cwnextgen.letternumberchase.utils.GlobalUtils
-import com.cwnextgen.letternumberchase.utils.GlobalUtils.increaseFontSize
 import com.cwnextgen.letternumberchase.utils.GlobalUtils.increaseFontSizeSingleView
+import com.cwnextgen.letternumberchase.utils.ShowPartyGlitters.showParty
 import com.cwnextgen.letternumberchase.utils.textChangeWithAnimation
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.network.utils.AppClass
 import com.network.utils.AppConstants
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private val TAG = "MainActivity"
 
     private lateinit var lettersRange: CharRange
     private lateinit var numbersRange: IntRange
@@ -44,6 +49,11 @@ class MainActivity : AppCompatActivity() {
     private var lettersRangeModel = LettersRange()
     private var maxOptions = 4
     private var gameMode = 1
+    var correctOption = ""
+    private var mRewardedAd: RewardedAd? = null
+
+    private var isReward = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -60,9 +70,73 @@ class MainActivity : AppCompatActivity() {
             onOptionSelected(selectedOption)
         }
 
+        binding.btnHome.setOnClickListener {
+            finish()
+        }
+        binding.tvRevealAnswer.setOnClickListener {
+            showRewardedAd()
+        }
 
 
     }
+
+    private fun loadRewardedAd() {
+        val adRequest = AdRequest.Builder().build()
+
+        RewardedAd.load(this,
+            getString(R.string.rewarded_ad_unit_id),
+            adRequest,
+            object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mRewardedAd = null
+                }
+
+                override fun onAdLoaded(rewardedAd: RewardedAd) {
+                    Log.d(TAG, "Ad was loaded.")
+                    mRewardedAd = rewardedAd
+                    rewardedAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                        override fun onAdDismissedFullScreenContent() {
+                            Log.d(TAG, "Ad was dismissed.")
+                            mRewardedAd = null
+                            giveReward()
+                        }
+
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                            Log.d(TAG, "Ad failed to show.")
+                            mRewardedAd = null
+                        }
+
+                        override fun onAdShowedFullScreenContent() {
+                            Log.d(TAG, "Ad showed fullscreen content.")
+                            mRewardedAd = null
+                        }
+                    }
+                }
+            })
+    }
+
+    private fun showRewardedAd() {
+        if (mRewardedAd != null) {
+            mRewardedAd?.show(this) {
+                Log.d(TAG, "User earned the reward.")
+            }
+        } else {
+            // Ad was not loaded yet, show a toast message.
+            Toast.makeText(this, getString(R.string.ad_not_load_msg), Toast.LENGTH_LONG).show()
+
+            // Or start loading a new ad.
+            loadRewardedAd()
+        }
+    }
+
+
+    private fun giveReward() {
+        //show answer
+        isReward = true
+        answerDialog(correctOption)
+        loadRewardedAd() // Load a new ad after the reward is given.
+    }
+
 
     fun onSwitchButtonClick(view: View) {
         isABCMode = !isABCMode
@@ -135,20 +209,9 @@ class MainActivity : AppCompatActivity() {
 
         currentOptions = options.shuffled().distinct()
         optionsAdapter.updateOptions(currentOptions)
-    }
 
-    private fun addIncorrectOptions(options: MutableList<String>, availableOptions: List<String>) {
-        val maxOptionsMinusOne = maxOptions
-        try {
-            val incorrectOptions = availableOptions.shuffled().take(maxOptionsMinusOne)
-            options.addAll(incorrectOptions)
-        } catch (e: Exception) {
-            // Handle the exception if necessary
-        }
-    }
-
-    private fun onOptionSelected(selectedOption: String) {
-        val correctOption = when (gameMode) {
+        //save the correct option
+        correctOption = when (gameMode) {
             1 -> if (isABCMode) currentLetter.toString() else currentNumber.toString()
             2 -> if (isABCMode) {
                 if (currentLetter == 'Z') 'A'.toString() else (currentLetter + 1).toString()
@@ -165,11 +228,28 @@ class MainActivity : AppCompatActivity() {
             else -> ""
         }
 
+    }
+
+    private fun addIncorrectOptions(options: MutableList<String>, availableOptions: List<String>) {
+        val maxOptionsMinusOne = maxOptions
+        try {
+            val incorrectOptions = availableOptions.shuffled().take(maxOptionsMinusOne)
+            options.addAll(incorrectOptions)
+        } catch (e: Exception) {
+            // Handle the exception if necessary
+        }
+    }
+
+    private fun onOptionSelected(selectedOption: String) {
+
+
         if (selectedOption == correctOption) {
-            showToast("Hurrah!")
+
+            if (AppClass.sharedPref.getBooleanDefaultTrue(AppConstants.CELEBRATION)) {
+                binding.viewKonfetti.showParty()
+            }
             updateContent()
         } else {
-            showToast("Alas...")
             val correctIndex = currentOptions.indexOf(correctOption)
             optionsAdapter.highlightCorrectOption(correctIndex)
         }
@@ -193,6 +273,11 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        if (isReward) {
+            isReward = false
+            return
+        }
+
         binding.adView.resume()
 
         //options column span count
@@ -205,11 +290,10 @@ class MainActivity : AppCompatActivity() {
 
 
         //set fonts
-        val selectedOptionFont = AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        val selectedOptionFont =
+            AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
         val fontResourceId = this.resources.getIdentifier(
-            selectedOptionFont,
-            "font",
-            this.packageName
+            selectedOptionFont, "font", this.packageName
         )
         val customFont = ResourcesCompat.getFont(this, fontResourceId)
         binding.tvLetter.typeface = customFont
@@ -218,15 +302,19 @@ class MainActivity : AppCompatActivity() {
 
 
         //set font size
-        binding.tvLetter.setTextSize(TypedValue.COMPLEX_UNIT_SP, 120.toFloat()) //reset to default so not increased every time in on resume
-        binding.tvMode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.toFloat()) //reset to default so not increased every time in on resume
+        binding.tvLetter.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP, 120.toFloat()
+        ) //reset to default so not increased every time in on resume
+        binding.tvMode.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP, 20.toFloat()
+        ) //reset to default so not increased every time in on resume
         val fontSize = AppClass.sharedPref.getInt(AppConstants.FONT_PERCENT, 0)
         Log.d("TAG", "onResume: " + fontSize)
         increaseFontSizeSingleView(binding.tvLetter, fontSize.toFloat())
         //add check so game mode title is not increased too much
-        if (fontSize>50){
+        if (fontSize > 50) {
             increaseFontSizeSingleView(binding.tvMode, 20.toFloat())
-        }else{
+        } else {
             increaseFontSizeSingleView(binding.tvMode, fontSize.toFloat())
         }
 
@@ -273,6 +361,7 @@ class MainActivity : AppCompatActivity() {
         binding.adView.pause()
         super.onPause()
     }
+
     public override fun onDestroy() {
         binding.adView.destroy()
         super.onDestroy()

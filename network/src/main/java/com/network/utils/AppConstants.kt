@@ -1,6 +1,8 @@
 package com.network.utils
 
 object AppConstants {
+    val CELEBRATION = "celebration"
+    val TABLE_COUNT = "table_count"
     val OPTIONS_COLUMN_COUNT = "options_column_count"
     val FONT_PERCENT = "font_percent"
     val FONT_TYPE = "font_type"

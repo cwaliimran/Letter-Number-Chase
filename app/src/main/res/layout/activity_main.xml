@@ -22,16 +22,16 @@
         android:paddingVertical="4dp"
         android:text="Switch to Numbers"
         app:layout_constraintEnd_toStartOf="@+id/btnSettings"
-        app:layout_constraintStart_toEndOf="@+id/btnSkip"
+        app:layout_constraintStart_toEndOf="@+id/btnHome"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/btnSkip"
+        android:id="@+id/btnHome"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:onClick="onSkipButtonClick"
-        android:src="@drawable/redo_btn"
+        android:src="@drawable/home_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnSwitch" />
 
@@ -45,6 +45,7 @@
         android:transitionName="settingsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnSwitch" />
+
     <TextView
         android:id="@+id/tvMode"
         android:layout_width="match_parent"
@@ -53,12 +54,13 @@
         android:gravity="center"
         android:text="Match Similar"
         android:textColor="@color/lightText"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSwitch"
-        android:textSize="20sp" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSwitch" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -71,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tvLetter"
                 android:layout_width="match_parent"
@@ -94,6 +97,28 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnSkip"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="onSkipButtonClick"
+        android:src="@drawable/redo_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/nestedScrollView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tvRevealAnswer"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="onSkipButtonClick"
+        android:src="@drawable/see_answer"
+        app:layout_constraintBottom_toBottomOf="@+id/nestedScrollView"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -104,5 +129,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/viewKonfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

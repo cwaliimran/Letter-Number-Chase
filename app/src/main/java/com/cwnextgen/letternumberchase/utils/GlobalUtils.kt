@@ -8,14 +8,13 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
+import com.cwnextgen.letternumberchase.models.TableItem
 
 object GlobalUtils {
     fun setCustomFont(view: View, context: Context, fontIdentifier: String? = "palamecia_titling") {
 
         val fontResourceId = context.resources.getIdentifier(
-            fontIdentifier,
-            "font",
-            context.packageName
+            fontIdentifier, "font", context.packageName
         )
         if (view is ViewGroup) {
             val childCount = view.childCount
@@ -30,12 +29,11 @@ object GlobalUtils {
             view.typeface = customFont
         }
     }
+
     fun setCustomFontSpecificView(view: View, fontIdentifier: String? = "palamecia_titling") {
         val context = view.context
         val fontResourceId = context.resources.getIdentifier(
-            fontIdentifier,
-            "font",
-            context.packageName
+            fontIdentifier, "font", context.packageName
         )
 
         when (view) {
@@ -43,10 +41,12 @@ object GlobalUtils {
                 val customFont = ResourcesCompat.getFont(context, fontResourceId)
                 view.typeface = customFont
             }
+
             is Button -> {
                 val customFont = ResourcesCompat.getFont(context, fontResourceId)
                 view.typeface = customFont
             }
+
             is ViewGroup -> {
                 // If the view is a ViewGroup, apply the custom font recursively to its children
                 view.children.forEach { childView ->
@@ -55,6 +55,7 @@ object GlobalUtils {
             }
         }
     }
+
     fun increaseFontSize(context: Context, rootView: View, increaseAmount: Float) {
         if (rootView is ViewGroup) {
             val childCount = rootView.childCount
@@ -76,8 +77,14 @@ object GlobalUtils {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSizeSp)
     }
 
-
-
+    // Function to generate a multiplication table
+    fun generateMultiplicationTable(tableNo: Int, count: Int): MutableList<TableItem> {
+        val tableData = mutableListOf<TableItem>()
+        for (i in 1..count) {
+            tableData.add(TableItem(tableNo, i, tableNo * i))
+        }
+        return tableData
+    }
 
 
 }
