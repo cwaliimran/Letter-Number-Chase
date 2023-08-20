@@ -81,4 +81,5 @@ dependencies {
 
     api 'com.google.android.gms:play-services-ads:22.2.0'
     api 'nl.dionsegijn:konfetti-xml:2.0.3'
+    api 'androidx.browser:browser:1.5.0'
 }

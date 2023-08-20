@@ -1,12 +1,9 @@
 package com.cwnextgen.letternumberchase
 
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
-import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -15,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cwnextgen.letternumberchase.databinding.ActivityMainBinding
 import com.cwnextgen.letternumberchase.dialogs.answerDialog
+import com.cwnextgen.letternumberchase.dialogs.coinsInfoDialog
 import com.cwnextgen.letternumberchase.models.LettersRange
 import com.cwnextgen.letternumberchase.models.NumbersRange
 import com.cwnextgen.letternumberchase.utils.GlobalUtils.increaseFontSizeSingleView
@@ -27,10 +25,11 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.network.base.BaseActivity
 import com.network.utils.AppClass
 import com.network.utils.AppConstants
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val TAG = "MainActivity"
@@ -53,21 +52,48 @@ class MainActivity : AppCompatActivity() {
     private var mRewardedAd: RewardedAd? = null
 
     private var isReward = false
+    private var continuousCorrectAnswers = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //load ad
-        MobileAds.initialize(this) {}
-        val adRequest = AdRequest.Builder().build()
-        binding.adView.loadAd(adRequest)
+        when (bundle?.getString(AppConstants.BUNDLE)) {
+            "lettersGame" -> {
+                isABCMode = true
+            }
 
+            "numbersGame" -> {
+                isABCMode = false
+            }
+
+            else -> {}
+        }
+
+        updateGameModeView()
+
+
+        if (BuildConfig.FLAVOR != "adfree") {
+            //load ad
+            MobileAds.initialize(this) {}
+            val adRequest = AdRequest.Builder().build()
+            binding.adView.loadAd(adRequest)
+        }
         //set fonts
         maxOptions = AppClass.sharedPref.getInt(AppConstants.MAX_OPTIONS, 4)
         optionsAdapter = OptionsAdapter { selectedOption ->
             onOptionSelected(selectedOption)
+        }
+
+
+    }
+
+    override fun clicks() {
+        binding.tvCoins.setOnClickListener {
+            coinsInfoDialog()
+        }
+        binding.tvDiamonds.setOnClickListener {
+            coinsInfoDialog()
         }
 
         binding.btnHome.setOnClickListener {
@@ -77,6 +103,48 @@ class MainActivity : AppCompatActivity() {
             showRewardedAd()
         }
 
+        binding.btnSwitch.setOnClickListener {
+            isABCMode = !isABCMode
+            updateContent()
+
+            updateGameModeView()
+        }
+
+
+        binding.btnSkip.setOnClickListener {
+            updateContent()
+
+        }
+
+        binding.btnSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+
+            // Define the animation options (fade-in and fade-out)
+            val animationOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, Pair.create(
+                    binding.btnSettings, ViewCompat.getTransitionName(binding.btnSettings)!!
+                )
+                // You can add more pairs for other views if needed
+            )
+
+            // Start the activity with animation options
+            startActivity(intent, animationOptions.toBundle())
+
+        }
+
+    }
+
+    private fun updateGameModeView() {
+        val buttonText = if (isABCMode) "Switch to Numbers" else "Switch to Letters"
+        binding.btnSwitch.text = buttonText
+        // Set the drawableEnd
+
+        val drawableRes = if (isABCMode) R.drawable.baseline_123_24 else R.drawable.baseline_abc_24
+        val drawable = ContextCompat.getDrawable(this, drawableRes)
+        val drawableStart = ContextCompat.getDrawable(this, R.drawable.baseline_cruelty_free_24)
+        binding.btnSwitch.setCompoundDrawablesWithIntrinsicBounds(
+            drawableStart, null, drawable, null
+        )
 
     }
 
@@ -135,48 +203,6 @@ class MainActivity : AppCompatActivity() {
         isReward = true
         answerDialog(correctOption)
         loadRewardedAd() // Load a new ad after the reward is given.
-    }
-
-
-    fun onSwitchButtonClick(view: View) {
-        isABCMode = !isABCMode
-        updateContent()
-
-        val buttonText = if (isABCMode) "Switch to Numbers" else "Switch to Letters"
-        binding.btnSwitch.text = buttonText
-        // Set the drawableEnd
-
-        val drawableRes = if (isABCMode) R.drawable.baseline_123_24 else R.drawable.baseline_abc_24
-        val drawable = ContextCompat.getDrawable(this, drawableRes)
-        val drawableStart = ContextCompat.getDrawable(this, R.drawable.baseline_cruelty_free_24)
-        binding.btnSwitch.setCompoundDrawablesWithIntrinsicBounds(
-            drawableStart, null, drawable, null
-        )
-
-    }
-
-    fun onOptionButtonClick(view: View) {
-        // No action needed here since the options are handled in OptionsAdapter
-    }
-
-    fun onSkipButtonClick(view: View) {
-        updateContent()
-
-    }
-
-    fun onSettingsButtonClick(view: View) {
-        val intent = Intent(this, SettingsActivity::class.java)
-
-        // Define the animation options (fade-in and fade-out)
-        val animationOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            this,
-            Pair.create(binding.btnSettings, ViewCompat.getTransitionName(binding.btnSettings)!!)
-            // You can add more pairs for other views if needed
-        )
-
-        // Start the activity with animation options
-        startActivity(intent, animationOptions.toBundle())
-
     }
 
     private fun generateOptions() {
@@ -241,15 +267,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onOptionSelected(selectedOption: String) {
-
-
         if (selectedOption == correctOption) {
 
             if (AppClass.sharedPref.getBooleanDefaultTrue(AppConstants.CELEBRATION)) {
                 binding.viewKonfetti.showParty()
             }
+
+            //update coins
+            var count = AppClass.sharedPref.getLong(AppConstants.COINS) + 1
+            binding.tvCoins.text = count.toString()
+            AppClass.sharedPref.storeLong(AppConstants.COINS, count)
+            continuousCorrectAnswers += 1
+            if (continuousCorrectAnswers == 5) {
+                continuousCorrectAnswers = 0
+                //diamonds only increase when 5 correct options are made in a row
+                var countDiamonds = AppClass.sharedPref.getLong(AppConstants.DIAMONDS) + 1
+                binding.tvDiamonds.text = countDiamonds.toString()
+                AppClass.sharedPref.storeLong(AppConstants.DIAMONDS, countDiamonds)
+            }
+
+
+
             updateContent()
         } else {
+            continuousCorrectAnswers = 0
+
+            var count = AppClass.sharedPref.getLong(AppConstants.COINS) - 1
+            binding.tvCoins.text = count.toString()
+            AppClass.sharedPref.storeLong(AppConstants.COINS, count)
+
+
             val correctIndex = currentOptions.indexOf(correctOption)
             optionsAdapter.highlightCorrectOption(correctIndex)
         }
@@ -296,7 +343,10 @@ class MainActivity : AppCompatActivity() {
             selectedOptionFont, "font", this.packageName
         )
         val customFont = ResourcesCompat.getFont(this, fontResourceId)
-        binding.tvLetter.typeface = customFont
+        binding.tvLetter.apply {
+            typeface = customFont
+            includeFontPadding = false
+        }
         binding.tvMode.typeface = customFont
         binding.btnSwitch.typeface = customFont
 
@@ -353,6 +403,10 @@ class MainActivity : AppCompatActivity() {
         }
         updateContent()
 
+
+        //coins count
+        binding.tvCoins.text = AppClass.sharedPref.getLong(AppConstants.COINS).toString()
+        binding.tvDiamonds.text = AppClass.sharedPref.getLong(AppConstants.DIAMONDS).toString()
 
     }
 

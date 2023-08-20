@@ -22,10 +22,12 @@ class TableActivity : BaseActivity() {
         binding = ActivityTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //load ad
-        MobileAds.initialize(this) {}
-        val adRequest = AdRequest.Builder().build()
-        binding.adView.loadAd(adRequest)
+        if (BuildConfig.FLAVOR != "adfree") {
+            //load ad
+            MobileAds.initialize(this) {}
+            val adRequest = AdRequest.Builder().build()
+            binding.adView.loadAd(adRequest)
+        }
 
 
         val selectedOptionFont =

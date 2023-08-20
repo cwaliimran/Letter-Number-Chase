@@ -2,9 +2,12 @@ package com.cwnextgen.letternumberchase.utils
 
 import android.content.Context
 import android.util.TypedValue
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
@@ -86,5 +89,30 @@ object GlobalUtils {
         return tableData
     }
 
+    fun Context.showOptionsMenu(
+        view: View,
+        menuResId: Int,
+        hideMenuItemIds: List<Int>? = mutableListOf(), // pass id like this mutableListOf(R.id.delete)
+        onMenuItemClickListener: (MenuItem) -> Boolean
+    ) {
+        val popupMenu = PopupMenu(this, view)
+        val inflater: MenuInflater = popupMenu.menuInflater
+        inflater.inflate(menuResId, popupMenu.menu)
 
+        // Get a reference to the menu and loop through its items to hide the desired ones
+        val menu = popupMenu.menu
+        if (hideMenuItemIds != null) {
+            for (id in hideMenuItemIds) {
+                val menuItem = menu.findItem(id)
+                menuItem?.isVisible = false
+            }
+        }
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            // Optionally, you can still pass the clicked MenuItem to the onMenuItemClickListener
+            onMenuItemClickListener(menuItem)
+        }
+
+        popupMenu.show()
+    }
 }

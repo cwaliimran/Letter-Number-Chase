@@ -2,23 +2,21 @@
     <string name="app_name">Letter Number Chase</string>
 
     <!--    live ids -->
-    <!--    <string name="admob_app_id" translatable="false"></string>
-    <string name="banner_ad_unit_id" translatable="false"></string>
-    <string name="openapp_ad_unit_id" translatable="false"></string>
-    <string name="interstitial_ad_unit_id" translatable="false"></string>
-    <string name="rewarded_ad_unit_id" translatable="false"></string>
-    <string name="native_custom_ad_unit_id" translatable="false"></string>-->
-
-    <!--    test ads ids-->
-    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="openapp_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/3419835294</string>
-    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="rewarded_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
-    <string name="native_custom_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-
+    <string name="admob_app_id" translatable="false">ca-app-pub-6434592293341843~5517682532</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-6434592293341843/3249190969</string>
+    <string name="openapp_ad_unit_id" translatable="false">ca-app-pub-6434592293341843/9073784163</string>
+    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-6434592293341843/7760702490</string>
+    <string name="rewarded_ad_unit_id" translatable="false">ca-app-pub-6434592293341843/6048412994</string>
+    <string name="native_custom_ad_unit_id" translatable="false">ca-app-pub-6434592293341843/9066863548</string>
 
     <string name="abc_123">ABC 123</string>
     <string name="settings">Settings</string>
     <string name="ad_not_load_msg">Ad not loaded yet. Please try again later.</string>
+
+    <string name="share">Share</string>
+    <string name="more">More</string>
+    <string name="rate_app">Rate App</string>
+    <string name="more_apps">More Apps</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="privacy_policy">Privacy Policy</string>
 </resources>

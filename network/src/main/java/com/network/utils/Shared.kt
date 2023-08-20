@@ -81,8 +81,10 @@ class SharedPref(myApp: AppClass) {
     }
 
 
-    fun getLong(key: String?): Long? {
-        return sharedPref?.getLong(key, 0)
+    fun getLong(key: String?): Long {
+        return if (sharedPref?.getLong(key, 0) != null) {
+            sharedPref?.getLong(key, 0)!!
+        } else 0
     }
 
 

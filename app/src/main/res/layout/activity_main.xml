@@ -17,7 +17,7 @@
         android:layout_marginTop="16dp"
         android:drawableStart="@drawable/baseline_cruelty_free_24"
         android:drawableEnd="@drawable/baseline_123_24"
-        android:onClick="onSwitchButtonClick"
+        android:includeFontPadding="false"
         android:paddingHorizontal="10dp"
         android:paddingVertical="4dp"
         android:text="Switch to Numbers"
@@ -30,7 +30,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="onSkipButtonClick"
         android:src="@drawable/home_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnSwitch" />
@@ -40,7 +39,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="onSettingsButtonClick"
         android:src="@drawable/settings_btn"
         android:transitionName="settingsButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,12 +50,44 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
+        android:includeFontPadding="false"
         android:text="Match Similar"
         android:textColor="@color/lightText"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSwitch" />
+
+    <TextView
+        android:id="@+id/tvCoins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:drawablePadding="5dp"
+        android:fontFamily="@font/digitalt"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:drawableEndCompat="@drawable/coin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSwitch"
+        tools:text="1234" />
+    <TextView
+        android:id="@+id/tvDiamonds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:drawablePadding="5dp"
+        android:fontFamily="@font/digitalt"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:drawableEndCompat="@drawable/diamond"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCoins"
+        tools:text="1234" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -78,6 +108,7 @@
                 android:id="@+id/tvLetter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/palanquin_dark"
                 android:gravity="center"
                 android:text="-"
                 android:textColor="@color/white"
@@ -129,10 +160,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
     <nl.dionsegijn.konfetti.xml.KonfettiView
         android:id="@+id/viewKonfetti"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

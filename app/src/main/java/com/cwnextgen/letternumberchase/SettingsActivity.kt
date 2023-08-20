@@ -4,6 +4,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import com.cwnextgen.letternumberchase.databinding.ActivitySettingsBinding
 import com.cwnextgen.letternumberchase.models.LettersRange
 import com.cwnextgen.letternumberchase.models.NumbersRange
@@ -21,6 +22,14 @@ class SettingsActivity : BaseActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        val selectedOptionFont1 =
+            AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        val fontResourceId = this.resources.getIdentifier(
+            selectedOptionFont1, "font", this.packageName
+        )
+        val customFont = ResourcesCompat.getFont(this, fontResourceId)
+        binding.tvTitle.typeface = customFont
 
         //numbers range
         var numbersRange =

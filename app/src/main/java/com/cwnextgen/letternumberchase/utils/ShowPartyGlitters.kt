@@ -1,5 +1,6 @@
 package com.cwnextgen.letternumberchase.utils
 
+import android.view.View
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.emitter.Emitter
@@ -9,6 +10,7 @@ import java.util.concurrent.TimeUnit
 object ShowPartyGlitters {
 
     fun KonfettiView.showParty() {
+        this.visibility = View.VISIBLE
         val party = Party(
             speed = 0f,
             maxSpeed = 30f,
