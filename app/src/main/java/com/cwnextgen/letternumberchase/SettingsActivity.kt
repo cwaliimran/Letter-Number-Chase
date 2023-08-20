@@ -1,11 +1,14 @@
 package com.cwnextgen.letternumberchase
 
 import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
 import com.cwnextgen.letternumberchase.databinding.ActivitySettingsBinding
 import com.cwnextgen.letternumberchase.models.LettersRange
 import com.cwnextgen.letternumberchase.models.NumbersRange
+import com.cwnextgen.letternumberchase.utils.GlobalUtils
+import com.cwnextgen.letternumberchase.utils.GlobalUtils.setCustomFontSpecificView
 import com.network.base.BaseActivity
 import com.network.utils.AppClass
 import com.network.utils.AppConstants
@@ -17,6 +20,7 @@ class SettingsActivity : BaseActivity() {
     override fun onCreate() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         //numbers range
         var numbersRange =
@@ -39,6 +43,9 @@ class SettingsActivity : BaseActivity() {
         binding.textViewOptionsRange.text = "${maxOptions + 1}" // Offset by +1
         binding.seekBarOptions.progress = maxOptions
 
+        //font size percent
+        val fontPercent = AppClass.sharedPref.getInt(AppConstants.FONT_PERCENT, 0)
+        binding.seekBarFontSize.progress = fontPercent
 
         //OPTIONS
         val radioGroup = binding.radioGroup
@@ -49,10 +56,41 @@ class SettingsActivity : BaseActivity() {
             2 -> radioGroup.check(R.id.radioOption2)
             3 -> radioGroup.check(R.id.radioOption3)
         }
-
+        //font OPTIONS
+        val radioGroupFonts = binding.radioGroupFonts
+        val selectedOptionFont = AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        // Set the selected radio button based on the loaded value
+        when (selectedOptionFont) {
+            "digitalt" -> radioGroupFonts.check(R.id.fontOption1)
+            "palamecia_titling" -> radioGroupFonts.check(R.id.fontOption2)
+            "palanquin_dark" -> radioGroupFonts.check(R.id.fontOption3)
+            "roboto_medium" -> radioGroupFonts.check(R.id.fontOption4)
+            "montserrat_semibold" -> radioGroupFonts.check(R.id.fontOption5)
+            "architects_daughter" -> radioGroupFonts.check(R.id.fontOption6)
+            "baloo_tamma" -> radioGroupFonts.check(R.id.fontOption7)
+        }
+        setFons()
 
         binding.randomOptions.isChecked =
             AppClass.sharedPref.getBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE)
+
+        //options column span count
+        val count = AppClass.sharedPref.getInt(AppConstants.OPTIONS_COLUMN_COUNT, 3)
+        binding.tvColCount.text = count.toString()
+    }
+
+    private fun setFons() {
+        val selectedOptionFont =
+            AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        GlobalUtils.setCustomFont(binding.root, this, selectedOptionFont)
+
+        setCustomFontSpecificView(binding.fontOption1, "digitalt")
+        setCustomFontSpecificView(binding.fontOption2, "palamecia_titling")
+        setCustomFontSpecificView(binding.fontOption3, "palanquin_dark")
+        setCustomFontSpecificView(binding.fontOption4, "roboto_medium")
+        setCustomFontSpecificView(binding.fontOption5, "montserrat_semibold")
+        setCustomFontSpecificView(binding.fontOption6, "architects_daughter")
+        setCustomFontSpecificView(binding.fontOption7, "baloo_tamma")
 
     }
 
@@ -61,7 +99,7 @@ class SettingsActivity : BaseActivity() {
             finish()
         }
 
-        // Handle radio button selection changes
+        // Handle game mode button selection changes
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedValue = when (checkedId) {
                 R.id.radioOption1 -> 1
@@ -71,6 +109,22 @@ class SettingsActivity : BaseActivity() {
             }
 
             AppClass.sharedPref.storeInt(AppConstants.MATCH_TYPE, selectedValue)
+        }
+        // Handle fonts button selection changes
+        binding.radioGroupFonts.setOnCheckedChangeListener { _, checkedId ->
+            val selectedValue = when (checkedId) {
+                R.id.fontOption1 -> "digitalt"
+                R.id.fontOption2 -> "palamecia_titling"
+                R.id.fontOption3 -> "palanquin_dark"
+                R.id.fontOption4 -> "roboto_medium"
+                R.id.fontOption5 -> "montserrat_semibold"
+                R.id.fontOption6 -> "architects_daughter"
+                R.id.fontOption7 -> "baloo_tamma"
+                else -> "digitalt"
+            }
+
+            AppClass.sharedPref.storeString(AppConstants.FONT_TYPE, selectedValue)
+            setFons()
         }
 
         binding.seekBarLetter.setOnSeekBarChangeListener(
@@ -135,6 +189,20 @@ class SettingsActivity : BaseActivity() {
             AppClass.sharedPref.storeInt(
                 AppConstants.MAX_OPTIONS, 4
             )
+            AppClass.sharedPref.storeBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE, false)
+
+
+            AppClass.sharedPref.storeInt(
+                AppConstants.OPTIONS_COLUMN_COUNT, 3
+            )
+            AppClass.sharedPref.storeString(
+                AppConstants.FONT_TYPE, "palamecia_titling"
+            )
+
+
+            AppClass.sharedPref.storeInt(
+                AppConstants.FONT_PERCENT, 0
+            )
 
             Toast.makeText(this, "Settings reset.", Toast.LENGTH_SHORT).show()
             finish()
@@ -152,7 +220,7 @@ class SettingsActivity : BaseActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 // Save the progress with the offset
-                val rangeEnd = seekBar?.progress!!  // Offset by +1
+                val rangeEnd = seekBar?.progress!!
                 AppClass.sharedPref.storeInt(AppConstants.MAX_OPTIONS, rangeEnd)
             }
         })
@@ -160,6 +228,39 @@ class SettingsActivity : BaseActivity() {
         binding.randomOptions.setOnCheckedChangeListener { compoundButton, b ->
             if (!compoundButton.isPressed) return@setOnCheckedChangeListener
             AppClass.sharedPref.storeBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE, b)
+        }
+
+        binding.seekBarFontSize.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                val rangeEnd = seekBar?.progress!!
+                AppClass.sharedPref.storeInt(AppConstants.FONT_PERCENT, rangeEnd)
+            }
+
+        })
+
+        binding.spanCount1.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.OPTIONS_COLUMN_COUNT, 1)
+            binding.tvColCount.text = "1"
+        }
+        binding.spanCount2.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.OPTIONS_COLUMN_COUNT, 2)
+            binding.tvColCount.text = "2"
+        }
+        binding.spanCount3.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.OPTIONS_COLUMN_COUNT, 3)
+            binding.tvColCount.text = "3"
+        }
+        binding.spanCount4.setOnClickListener {
+            AppClass.sharedPref.storeInt(AppConstants.OPTIONS_COLUMN_COUNT, 4)
+            binding.tvColCount.text = "4"
         }
     }
 

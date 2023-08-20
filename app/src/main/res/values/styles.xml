@@ -23,8 +23,6 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:letterSpacing">0.05</item>
         <item name="android:maxLines">1</item>
-        <item name="android:outlineProvider">bounds</item>
-        <item name="android:padding">20dp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -32,7 +30,6 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/buttonbg1</item>
-        <item name="android:fontFamily">@font/digitalt</item>
         <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:paddingBottom">3dp</item>
         <item name="android:textColor">@color/grey</item>

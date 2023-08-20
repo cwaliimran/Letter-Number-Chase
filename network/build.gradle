@@ -78,4 +78,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 
+
+    api 'com.google.android.gms:play-services-ads:22.2.0'
+
 }

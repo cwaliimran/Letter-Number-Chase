@@ -2,16 +2,26 @@ package com.cwnextgen.letternumberchase
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import com.cwnextgen.letternumberchase.databinding.ActivityMainBinding
 import com.cwnextgen.letternumberchase.models.LettersRange
 import com.cwnextgen.letternumberchase.models.NumbersRange
+import com.cwnextgen.letternumberchase.utils.GlobalUtils
+import com.cwnextgen.letternumberchase.utils.GlobalUtils.increaseFontSize
+import com.cwnextgen.letternumberchase.utils.GlobalUtils.increaseFontSizeSingleView
+import com.cwnextgen.letternumberchase.utils.textChangeWithAnimation
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.network.utils.AppClass
 import com.network.utils.AppConstants
 
@@ -38,14 +48,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //load ad
+        MobileAds.initialize(this) {}
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
+
+        //set fonts
         maxOptions = AppClass.sharedPref.getInt(AppConstants.MAX_OPTIONS, 4)
         optionsAdapter = OptionsAdapter { selectedOption ->
             onOptionSelected(selectedOption)
         }
 
-        binding.rvOptions.apply {
-            adapter = optionsAdapter
-        }
+
+
     }
 
     fun onSwitchButtonClick(view: View) {
@@ -71,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onSkipButtonClick(view: View) {
         updateContent()
+
     }
 
     fun onSettingsButtonClick(view: View) {
@@ -92,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         val options = mutableListOf<String>()
 
         //random multiple choice count enabled
-        if (AppClass.sharedPref.getBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE)){
+        if (AppClass.sharedPref.getBoolean(AppConstants.RANDOM_MULTIPLE_CHOICE)) {
             maxOptions = (1..12).random()
         }
 
@@ -138,11 +155,13 @@ class MainActivity : AppCompatActivity() {
             } else {
                 (currentNumber + 1).toString()
             }
+
             3 -> if (isABCMode) {
                 if (currentLetter == 'A') 'Z'.toString() else (currentLetter - 1).toString()
             } else {
                 (currentNumber - 1).toString()
             }
+
             else -> ""
         }
 
@@ -161,9 +180,9 @@ class MainActivity : AppCompatActivity() {
         generateOptions()
 
         if (isABCMode) {
-            binding.tvLetter.text = currentLetter.toString()
+            textChangeWithAnimation(binding.tvLetter, currentLetter.toString())
         } else {
-            binding.tvLetter.text = currentNumber.toString()
+            textChangeWithAnimation(binding.tvLetter, currentNumber.toString())
         }
     }
 
@@ -173,6 +192,43 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        binding.adView.resume()
+
+        //options column span count
+        val count = AppClass.sharedPref.getInt(AppConstants.OPTIONS_COLUMN_COUNT, 3)
+        val layoutManagerGrid = GridLayoutManager(this, count)
+        binding.rvOptions.apply {
+            layoutManager = layoutManagerGrid
+            adapter = optionsAdapter
+        }
+
+
+        //set fonts
+        val selectedOptionFont = AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        val fontResourceId = this.resources.getIdentifier(
+            selectedOptionFont,
+            "font",
+            this.packageName
+        )
+        val customFont = ResourcesCompat.getFont(this, fontResourceId)
+        binding.tvLetter.typeface = customFont
+        binding.tvMode.typeface = customFont
+        binding.btnSwitch.typeface = customFont
+
+
+        //set font size
+        binding.tvLetter.setTextSize(TypedValue.COMPLEX_UNIT_SP, 120.toFloat()) //reset to default so not increased every time in on resume
+        binding.tvMode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.toFloat()) //reset to default so not increased every time in on resume
+        val fontSize = AppClass.sharedPref.getInt(AppConstants.FONT_PERCENT, 0)
+        Log.d("TAG", "onResume: " + fontSize)
+        increaseFontSizeSingleView(binding.tvLetter, fontSize.toFloat())
+        //add check so game mode title is not increased too much
+        if (fontSize>50){
+            increaseFontSizeSingleView(binding.tvMode, 20.toFloat())
+        }else{
+            increaseFontSizeSingleView(binding.tvMode, fontSize.toFloat())
+        }
 
 
         //numbers range
@@ -209,5 +265,16 @@ class MainActivity : AppCompatActivity() {
         }
         updateContent()
 
+
+    }
+
+
+    public override fun onPause() {
+        binding.adView.pause()
+        super.onPause()
+    }
+    public override fun onDestroy() {
+        binding.adView.destroy()
+        super.onDestroy()
     }
 }

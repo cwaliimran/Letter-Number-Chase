@@ -83,7 +83,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def currentDate = new Date().format("yyyy-MM-dd HH-mm-ss")
-            def appName = "KuKu"
+            def appName = "Letter Number Chase"
             def outputFileName = "${appName} ${variant.baseName} ${variant.versionName} ${variant.versionCode} ${currentDate}.apk"
             output.outputFileName = outputFileName
         }
