@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_number": "315838478018",
+    "project_id": "letter-number-chase",
+    "storage_bucket": "letter-number-chase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315838478018:android:f0f4098786dfa343772d5b",
+        "android_client_info": {
+          "package_name": "com.cwnextgen.letternumberchase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315838478018-i258qnsf4ambtp6cb9u1utjjbars4upo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxtw6PyEX-qyK35Akj8fgIo9InFkSGKd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315838478018-i258qnsf4ambtp6cb9u1utjjbars4upo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315838478018:android:40fee2c334b56d29772d5b",
+        "android_client_info": {
+          "package_name": "com.cwnextgen.letternumberchase.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315838478018-i258qnsf4ambtp6cb9u1utjjbars4upo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxtw6PyEX-qyK35Akj8fgIo9InFkSGKd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315838478018-i258qnsf4ambtp6cb9u1utjjbars4upo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315838478018:android:3cc97c85e03a5d88772d5b",
+        "android_client_info": {
+          "package_name": "com.kuku.app.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315838478018-i258qnsf4ambtp6cb9u1utjjbars4upo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxtw6PyEX-qyK35Akj8fgIo9InFkSGKd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315838478018-i258qnsf4ambtp6cb9u1utjjbars4upo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
