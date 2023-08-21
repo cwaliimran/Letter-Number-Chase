@@ -1,9 +1,13 @@
 package com.cwnextgen.letternumberchase
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.util.TypedValue
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -57,7 +61,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        askNotificationPermission()
         when (bundle?.getString(AppConstants.BUNDLE)) {
             "lettersGame" -> {
                 isABCMode = true
@@ -419,5 +423,39 @@ class MainActivity : BaseActivity() {
     public override fun onDestroy() {
         binding.adView.destroy()
         super.onDestroy()
+    }
+
+    // Declare the launcher at the top of your Activity/Fragment:
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // FCM SDK (and your app) can post notifications.
+        } else {
+            denyExplanation()
+        }
+    }
+
+    private fun denyExplanation() {
+        Toast.makeText(
+            this, "Allow notification permissions to receive notifications", Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // FCM SDK (and your app) can post notifications.
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                denyExplanation()
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 }
