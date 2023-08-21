@@ -62,6 +62,8 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         askNotificationPermission()
+        //reward ad
+        loadRewardedAd()
         when (bundle?.getString(AppConstants.BUNDLE)) {
             "lettersGame" -> {
                 isABCMode = true
@@ -278,14 +280,14 @@ class MainActivity : BaseActivity() {
             }
 
             //update coins
-            var count = AppClass.sharedPref.getLong(AppConstants.COINS) + 1
+            val count = AppClass.sharedPref.getLong(AppConstants.COINS) + 1
             binding.tvCoins.text = count.toString()
             AppClass.sharedPref.storeLong(AppConstants.COINS, count)
             continuousCorrectAnswers += 1
             if (continuousCorrectAnswers == 5) {
                 continuousCorrectAnswers = 0
                 //diamonds only increase when 5 correct options are made in a row
-                var countDiamonds = AppClass.sharedPref.getLong(AppConstants.DIAMONDS) + 1
+                val countDiamonds = AppClass.sharedPref.getLong(AppConstants.DIAMONDS) + 1
                 binding.tvDiamonds.text = countDiamonds.toString()
                 AppClass.sharedPref.storeLong(AppConstants.DIAMONDS, countDiamonds)
             }
@@ -296,7 +298,7 @@ class MainActivity : BaseActivity() {
         } else {
             continuousCorrectAnswers = 0
 
-            var count = AppClass.sharedPref.getLong(AppConstants.COINS) - 1
+            val count = AppClass.sharedPref.getLong(AppConstants.COINS) - 1
             binding.tvCoins.text = count.toString()
             AppClass.sharedPref.storeLong(AppConstants.COINS, count)
 
