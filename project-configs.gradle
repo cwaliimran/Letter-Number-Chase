@@ -1,0 +1,9 @@
+ext {
+  applicationId = "com.cwnextgen.letternumberchase"
+  compileSdkVersion = 33
+  minSdkVersion = 23
+  targetSdkVersion = compileSdkVersion
+  versionCode = 3
+  versionName = "1.2"
+  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+}

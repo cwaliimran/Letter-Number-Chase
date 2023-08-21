@@ -1,28 +1,63 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.gms.google-services'
 }
 
 android {
-    namespace 'com.cwnextgen.letternumberchase'
-    compileSdk 33
+    def configs = rootProject.ext
+
+    namespace configs.applicationId
+    compileSdkVersion configs.compileSdkVersion
+
 
     defaultConfig {
-        applicationId "com.cwnextgen.letternumberchase"
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        applicationId configs.applicationId
+        minSdk configs.minSdkVersion
+        targetSdk configs.targetSdkVersion
+        versionCode configs.versionCode
+        versionName configs.versionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner configs.testInstrumentationRunner
+        multiDexEnabled true
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+        sourceSets {
+            androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+        }
     }
-
+    signingConfigs {
+        create("release") {
+            //organization letternumberchaseapp
+            keyAlias 'letternumberchaseapp'
+            keyPassword 'letternumberchase@pp#'
+            storePassword 'letternumberchase@pp#'
+            storeFile file("/Users/s/Desktop/Development/AndroidApps/Android-Apps-JKS-Files/LetterNumberChaseApp/letternumberchaseapp.jks")
+        }
+    }
     buildTypes {
+        debug {
+            ext.enableCrashlytics = false
+
+        }
         release {
-            minifyEnabled false
+            ext.enableCrashlytics = true
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        buildConfig = true
+        viewBinding true
+        dataBinding true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -31,20 +66,90 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-        buildConfig true
+    flavorDimensions 'letternumberchase'
+    productFlavors {
+        //all features are unlocked in free version
+        prod {
+            dimension 'letternumberchase'
+        }
+        //user will purchases or restore because he is in paid version
+        dev {
+            dimension 'letternumberchase'
+            applicationIdSuffix '.dev'
+        }
+        qa {
+            dimension 'letternumberchase'
+        }
+        adfree {
+            dimension 'letternumberchase'
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def currentDate = new Date().format("yyyy-MM-dd HH-mm-ss")
+            def appName = "Letter Number Chase"
+            def outputFileName = "${appName} ${variant.baseName} ${variant.versionName} ${variant.versionCode} ${currentDate}.apk"
+            output.outputFileName = outputFileName
+        }
     }
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation project(path: ':network')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //jetpack
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+
+    //Editext Toggle
+    implementation "com.google.android.material:material:1.9.0"
+
+    //OTP
+    implementation 'com.alimuzaffar.lib:pinentryedittext:2.0.6'
+
+
+    //android x
+    implementation("androidx.activity:activity-ktx:1.7.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.0")
+
+    //firebase
+
+//    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
+//    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.7'
+//    implementation 'com.google.firebase:firebase-bom:32.1.1'
+//    implementation 'com.google.firebase:firebase-messaging-ktx:23.1.2'
+//    implementation 'com.google.android.gms:play-services-cloud-messaging:17.0.2'
+//    implementation 'com.google.firebase:firebase-messaging:23.1.2'
+
+
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+
+    implementation 'androidx.browser:browser:1.5.0'
+
+    implementation 'com.google.android.gms:play-services-auth:20.6.0'
+
+    //gif/image loading libraries
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+//    kapt 'com.android.databinding:compiler:3.5.1'
+
+    implementation 'com.karumi:dexter:6.2.3'
+
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
+
+    implementation 'androidx.browser:browser:1.5.0'
+    implementation 'com.hbb20:ccp:2.7.3'
 }

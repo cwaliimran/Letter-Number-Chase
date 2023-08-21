@@ -2,51 +2,59 @@ package com.cwnextgen.letternumberchase
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.cwnextgen.letternumberchase.databinding.LetterOptionItemBinding
+import com.cwnextgen.letternumberchase.utils.Animations.playShakeAnimation
+import com.cwnextgen.letternumberchase.utils.GlobalUtils
+import com.cwnextgen.letternumberchase.utils.GlobalUtils.setCustomFont
+import com.network.utils.AppClass
+import com.network.utils.AppConstants
 
 class OptionsAdapter(private val onItemClick: (String) -> Unit) :
     RecyclerView.Adapter<OptionsAdapter.ViewHolder>() {
-    private lateinit var context: Context
+    lateinit var context: Context
     private var options: List<String> = listOf()
-    private var highlightedIndex: Int = -1 // Index of the highlighted option
+    private var highlightedIndex: Int =
+        -1 // Index of the highlighted option - default none selected
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val btnOption: Button = itemView.findViewById(R.id.btnOption)
+    inner class ViewHolder(private val binding: LetterOptionItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         init {
-            btnOption.setOnClickListener {
-                onItemClick(options[adapterPosition])
+            binding.btnOption.setOnClickListener {
+                onItemClick(options[absoluteAdapterPosition])
+            }
+        }
+
+        fun bind(option: String, isHighlighted: Boolean) {
+            binding.btnOption.text = option
+            if (isHighlighted) {
+                binding.btnOption.setBackgroundResource(R.drawable.correct_option)
+                playShakeAnimation(binding.btnOption)
+            } else {
+                binding.btnOption.setBackgroundResource(R.drawable.buttonbg1)
             }
         }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.letter_option_item, parent, false)
-        return ViewHolder(itemView)
+        val binding = LetterOptionItemBinding.inflate(LayoutInflater.from(context), parent, false)
+        val selectedOptionFont = AppClass.sharedPref.getString(AppConstants.FONT_TYPE, "palamecia_titling")
+        GlobalUtils.setCustomFont(binding.root, context, selectedOptionFont)
+        //set font size
+        val fontSize = AppClass.sharedPref.getInt(AppConstants.FONT_PERCENT, 0)
+        GlobalUtils.increaseFontSize(context, binding.root, fontSize.toFloat())
+
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val option = options[position]
-        holder.btnOption.text = option
-
-        // Set the background color for the correct option
-        if (position == highlightedIndex) {
-            holder.btnOption.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.highlightColor
-                )
-            )
-        } else {
-            holder.btnOption.setBackgroundColor(ContextCompat.getColor(context, R.color.primary))
-
-        }
+        val isHighlighted = position == highlightedIndex
+        holder.bind(option, isHighlighted)
     }
 
     override fun getItemCount(): Int = options.size
