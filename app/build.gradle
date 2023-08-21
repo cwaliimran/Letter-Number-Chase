@@ -10,7 +10,7 @@ android {
     def configs = rootProject.ext
 
     namespace configs.applicationId
-    sdkVersion configs.compileSdkVersion
+    compileSdk configs.compileSdkVersion
 
 
     defaultConfig {
@@ -67,6 +67,7 @@ android {
     }
 
     flavorDimensions 'letternumberchase'
+
     productFlavors {
         //all features are unlocked in free version
         prod {
