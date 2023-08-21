@@ -68,7 +68,7 @@
         android:gravity="center"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="28sp"
         app:drawableEndCompat="@drawable/coin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSwitch"
@@ -83,7 +83,7 @@
         android:gravity="center"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="28sp"
         app:drawableEndCompat="@drawable/diamond"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCoins"
@@ -134,7 +134,6 @@
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="onSkipButtonClick"
         android:src="@drawable/redo_btn"
         app:layout_constraintBottom_toBottomOf="@+id/nestedScrollView"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -145,7 +144,6 @@
         android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="onSkipButtonClick"
         android:src="@drawable/see_answer"
         app:layout_constraintBottom_toBottomOf="@+id/nestedScrollView"
         app:layout_constraintStart_toStartOf="parent" />

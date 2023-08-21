@@ -14,7 +14,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="onSettingsButtonClick"
         android:src="@drawable/settings_btn"
         android:transitionName="settingsButton"
         app:layout_constraintEnd_toEndOf="parent"

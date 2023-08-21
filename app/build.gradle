@@ -10,7 +10,7 @@ android {
     def configs = rootProject.ext
 
     namespace configs.applicationId
-    compileSdkVersion configs.compileSdkVersion
+    sdkVersion configs.compileSdkVersion
 
 
     defaultConfig {
