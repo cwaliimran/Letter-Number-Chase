@@ -421,7 +421,7 @@
                         android:layout_marginTop="10dp"
                         android:outlineProvider="none"
                         android:padding="0dp"
-                        android:text="Options in Each Column"
+                        android:text="Options in Each Row"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
 
